@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Sistema Solar 3D Dentro do Cubo</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas { display: block; touch-action: none; }
+        #button-container {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+        button {
+            padding: 12px 16px;
+            font-size: 14px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .star-id {
+            position: absolute;
+            color: white;
+            font-size: 10px;
+            font-family: Arial, sans-serif;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            white-space: nowrap;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.138.3/build/three.min.js"></script>
+
+<script>
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    scene.background = new THREE.Color(0x000000);
+
+    const cubeGeometry = new THREE.BoxGeometry(2.5, 2.5, 2.5);
+    const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
+    const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+    scene.add(cube);
+
+    // Criar o Sol com brilho
+    const sunGeometry = new THREE.SphereGeometry(0.3, 32, 32);
+    const sunMaterial = new THREE.MeshStandardMaterial({
+        emissive: 0xFFFF00, // Cor de emissão (amarelo brilhante)
+        emissiveIntensity: 2, // Intensidade do brilho
+        color: 0xFFA500, // Cor base (laranja)
+        roughness: 0.5
+    });
+    const sun = new THREE.Mesh(sunGeometry, sunMaterial);
+    cube.add(sun);
+
+    // Criar efeito de brilho ao redor do Sol
+    const sunGlowGeometry = new THREE.SphereGeometry(0.35, 32, 32);
+    const sunGlowMaterial = new THREE.MeshBasicMaterial({
+        color: 0xFFFF99,
+        transparent: true,
+        opacity: 0.5
+    });
+    const sunGlow = new THREE.Mesh(sunGlowGeometry, sunGlowMaterial);
+    cube.add(sunGlow);
+
+    const stars = [];
+    const starIdElements = [];
+    const starColors = ["#FF0000", "#FFA500", "#FFFF00", "#FFFFFF", "#A3C8FF", "#0000FF"];
+
+    function createStar(position = null, id = null, color = null) {
+        const starGeometry = new THREE.SphereGeometry(0.02, 8, 8);
+        const starMaterial = new THREE.MeshBasicMaterial({ color: color || starColors[Math.floor(Math.random() * starColors.length)] });
+        const star = new THREE.Mesh(starGeometry, starMaterial);
+
+        if (position) {
+            star.position.set(position.x, position.y, position.z);
+        } else {
+            star.position.set(
+                Math.random() * 5 - 2.5,
+                Math.random() * 5 - 2.5,
+                Math.random() * 5 - 2.5
+            );
+        }
+
+        const starId = id || 'ID-' + Math.floor(Math.random() * 900 + 100);
+        star.userData.id = starId;
+        stars.push(star);
+        cube.add(star);
+
+        const starIdElement = document.createElement('div');
+        starIdElement.className = 'star-id';
+        starIdElement.textContent = starId;
+        starIdElement.onclick = () => {
+            animateCameraToStar(star, starId);
+        };
+
+        document.body.appendChild(starIdElement);
+        starIdElements.push({ element: starIdElement, star });
+    }
+
+    function animateCameraToStar(star, starId) {
+        const targetPosition = new THREE.Vector3();
+        star.getWorldPosition(targetPosition);
+
+        const initialPosition = camera.position.clone();
+        const distance = targetPosition.clone().sub(initialPosition).length();
+
+        const duration = distance / 5;
+        const startTime = performance.now();
+
+        function animate() {
+            const elapsedTime = (performance.now() - startTime) / 1000;
+            if (elapsedTime < duration) {
+                const t = elapsedTime / duration;
+                camera.position.lerpVectors(initialPosition, targetPosition, t);
+                camera.lookAt(targetPosition);
+                requestAnimationFrame(animate);
+            } else {
+                window.location.href = `planeta.html?id=${starId}`;
+            }
+        }
+
+        animate();
+    }
+
+    function saveStarData() {
+        const starData = stars.map(star => ({
+            id: star.userData.id,
+            x: star.position.x,
+            y: star.position.y,
+            z: star.position.z,
+            color: star.material.color.getHexString()
+        }));
+        localStorage.setItem('starData', JSON.stringify(starData));
+    }
+
+    function loadStarData() {
+        const storedStars = JSON.parse(localStorage.getItem('starData'));
+        if (storedStars) {
+            storedStars.forEach(({ x, y, z, id, color }) => createStar({ x, y, z }, id, `#${color}`));
+        } else {
+            for (let i = 0; i < 50; i++) createStar();
+        }
+    }
+
+    loadStarData();
+
+    const light = new THREE.PointLight(0xffffff, 1, 100);
+    scene.add(light);
+
+    camera.position.z = 7;
+
+    function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+
+        starIdElements.forEach(({ element, star }) => {
+            const vector = new THREE.Vector3();
+            star.getWorldPosition(vector);
+            const screenPosition = vector.project(camera);
+
+            const x = (screenPosition.x * 0.5 + 0.5) * window.innerWidth;
+            const y = (-(screenPosition.y * 0.5) + 0.5) * window.innerHeight;
+
+            element.style.left = `${x}px`;
+            element.style.top = `${y}px`;
+        });
+    }
+
+    animate();
+
+    function moveStars() {
+        stars.forEach(star => {
+            star.position.set(
+                Math.random() * 5 - 2.5,
+                Math.random() * 5 - 2.5,
+                Math.random() * 5 - 2.5
+            );
+        });
+        saveStarData();
+    }
+
+    const buttonContainer = document.createElement('div');
+    buttonContainer.id = 'button-container';
+    document.body.appendChild(buttonContainer);
+
+    const button = document.createElement('button');
+    button.textContent = 'Mudar Estrelas';
+    button.onclick = moveStars;
+    buttonContainer.appendChild(button);
+
+    let isTouching = false;
+    let previousTouch = { x: 0, y: 0 };
+
+    renderer.domElement.addEventListener('touchstart', (event) => {
+        isTouching = true;
+        previousTouch.x = event.touches[0].clientX;
+        previousTouch.y = event.touches[0].clientY;
+    });
+
+    renderer.domElement.addEventListener('touchmove', (event) => {
+        if (!isTouching) return;
+
+        const deltaX = event.touches[0].clientX - previousTouch.x;
+        const deltaY = event.touches[0].clientY - previousTouch.y;
+
+        cube.rotation.x += deltaY * 0.003;
+        cube.rotation.y += deltaX * 0.003;
+
+        previousTouch.x = event.touches[0].clientX;
+        previousTouch.y = event.touches[0].clientY;
+    });
+
+    renderer.domElement.addEventListener('touchend', () => {
+        isTouching = false;
+    });
+
+    window.addEventListener('resize', () => {
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+    });
+</script>
+
+</body>
+</html>
