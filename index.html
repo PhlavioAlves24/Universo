@@ -124,7 +124,6 @@
                 camera.lookAt(targetPosition);
                 requestAnimationFrame(animate);
             } else {
-                localStorage.setItem('cameraPosition', JSON.stringify(initialPosition));
                 window.location.href = `planeta.html?id=${starId}`;
             }
         }
@@ -157,13 +156,8 @@
     const light = new THREE.PointLight(0xffffff, 1, 100);
     scene.add(light);
 
-    const savedCamera = JSON.parse(localStorage.getItem('cameraPosition'));
-    if (savedCamera) {
-        camera.position.set(savedCamera.x, savedCamera.y, savedCamera.z);
-        localStorage.removeItem('cameraPosition');
-    } else {
-        camera.position.z = 7;
-    }
+    // Sempre iniciar com a posição padrão
+    camera.position.z = 7;
 
     function animate() {
         requestAnimationFrame(animate);
@@ -235,8 +229,14 @@
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
     });
+
+    // Garante que ao voltar do planeta, a página reinicie completamente
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
 </script>
 
 </body>
 </html>
-```
