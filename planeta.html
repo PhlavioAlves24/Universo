@@ -1,75 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Planeta 3D</title>
-    <style>
-        body { margin: 0; overflow: hidden; background-color: black; }
-        canvas { display: block; touch-action: none; }
-        #planet-id {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 18px;
-            color: white;
-            font-family: Arial, sans-serif;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 10px;
-            border-radius: 5px;
-        }
-        #back-button {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            font-size: 16px;
-            padding: 10px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        #settings-button {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 16px;
-            padding: 10px 15px;
-            background-color: #555;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        #settings-menu {
-            position: absolute;
-            top: 60px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            font-family: Arial, sans-serif;
-            padding: 10px;
-            border-radius: 5px;
-            display: none;
-        }
-        #settings-menu label { display: block; margin: 5px 0; }
-        #settings-menu input[type="range"] { width: 100%; }
-        #settings-menu button {
-            display: block;
-            width: 100%;
-            margin: 5px 0;
-            padding: 8px;
-            background: #444;
-            color: white;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            text-align: left;
-        }
-        #settings-menu button:hover { background: #666; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Planeta 3D</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
+        }
+
+        canvas {
+            display: block;
+            touch-action: none;
+        }
+
+        #planet-id {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            color: white;
+            font-family: Arial, sans-serif;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        #back-button {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            font-size: 16px;
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #settings-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 16px;
+            padding: 10px 15px;
+            background-color: #555;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #settings-menu {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        #settings-menu label {
+            display: block;
+            margin: 5px 0;
+        }
+
+        #settings-menu input[type="range"] {
+            width: 100%;
+        }
+
+        #settings-menu button {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+            padding: 8px;
+            background: #444;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        #settings-menu button:hover {
+            background: #666;
+        }
+    </style>
 </head>
 <body>
 
@@ -77,160 +100,535 @@
 <button id="back-button" onclick="window.history.back()">Voltar</button>
 <button id="settings-button">⚙️</button>
 <div id="settings-menu">
-    <label for="rotation-speed">Velocidade de Rotação:</label>
-    <input type="range" id="rotation-speed" min="0" max="0.1" step="0.001" value="0.01">
+    <label for="rotation-speed">Velocidade de Rotação:</label>
+    <input type="range" id="rotation-speed" min="0" max="0.1" step="0.001" value="0.01">
 
-    <label for="orbit-speed">Velocidade da Órbita:</label>
-    <input type="range" id="orbit-speed" min="0" max="0.1" step="0.001" value="0.01">
+    <label for="orbit-speed">Velocidade da Órbita:</label>
+    <input type="range" id="orbit-speed" min="0" max="0.1" step="0.001" value="0.01">
 
-    <label for="zoom-level">Zoom:</label>
-    <input type="range" id="zoom-level" min="4" max="8" step="0.1" value="6">
+    <label for="zoom-level">Zoom:</label>
+    <input type="range" id="zoom-level" min="4" max="8" step="0.1" value="6">
 
-    <label for="planet-size">Tamanho do Planeta:</label>
-    <input type="range" id="planet-size" min="0.1" max="0.5" step="0.01" value="0.2">
+    <label for="planet-size">Tamanho do Planeta:</label>
+    <input type="range" id="planet-size" min="0.1" max="0.5" step="0.01" value="0.2">
 
-    <button id="toggle-atmosphere">Remover Atmosfera</button>
-    <button id="toggle-land">Remover Solo</button>
-    <button onclick="toggleSettings()">Voltar</button>
+    <button id="toggle-atmosphere">Remover Atmosfera</button>
+    <button id="toggle-land">Remover Solo</button>
+    <button onclick="toggleSettings()">Voltar</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.138.3/build/three.min.js"></script>
 
 <script>
-    function hashStringToNumber(str) {
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-            hash = str.charCodeAt(i) + ((hash << 5) - hash);
-        }
-        return hash;
-    }
+    // Função para gerar um hash numérico a partir de uma string
+    function hashStringToNumber(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        return hash;
+    }
 
-    const params = new URLSearchParams(window.location.search);
-    const planetId = params.get('id') || 'Desconhecido';
-    document.getElementById('planet-id').textContent = `Planeta: ${planetId}`;
+    // Recupera o ID do planeta da URL
+    const params = new URLSearchParams(window.location.search);
+    const planetId = params.get('id') || 'Desconhecido';
+    document.getElementById('planet-id').textContent = `Planeta: ${planetId}`;
 
-    // **Obtem a cor do Sol do localStorage (mesma cor da estrela do cubo)**
-    const storedStarColor = localStorage.getItem(`starData`);
-    let starColor = 0xFFFF00; // default amarelo
-    if (storedStarColor) {
-        const stars = JSON.parse(storedStarColor);
-        const matchedStar = stars.find(s => s.id === planetId);
-        if (matchedStar) {
-            starColor = parseInt(matchedStar.color, 16);
-        }
-    }
+    // Get the star color from localStorage
+    const starColorHex = localStorage.getItem(`starColor_${planetId}`);
+    let starColor = 0xFFFF00 // Default yellow if not found
 
-    const palettes = [
-        { name: "Earth-like", colorLand: new THREE.Color(0x3CB371), desertColor: new THREE.Color(0xF0E68C), mountainColor: new THREE.Color(0x778899), colorWater: new THREE.Color(0x1E90FF), snowColor: new THREE.Color(0xFFFAFA), atmosphereColor: new THREE.Color(0.6,0.8,1.0) },
-        { name: "Mars-like", colorLand: new THREE.Color(0xA0522D), desertColor: new THREE.Color(0xCD853F), mountainColor: new THREE.Color(0x8B4513), colorWater: new THREE.Color(0x8B0000), snowColor: new THREE.Color(0xF08080), atmosphereColor: new THREE.Color(1.0,0.6,0.4) },
-        { name: "Venus-like", colorLand: new THREE.Color(0xD2B48C), desertColor: new THREE.Color(0xE9D6AC), mountainColor: new THREE.Color(0xB8860B), colorWater: new THREE.Color(0xFFE4C4), snowColor: new THREE.Color(0xFFE4C4), atmosphereColor: new THREE.Color(1.0,0.8,0.6) },
-        { name: "Jupiter-like", colorLand: new THREE.Color(0xE9C2A6), desertColor: new THREE.Color(0xDEB887), mountainColor: new THREE.Color(0xA0522D), colorWater: new THREE.Color(0xF5DEB3), snowColor: new THREE.Color(0xF5DEB3), atmosphereColor: new THREE.Color(0.8,0.6,0.4) },
-        { name: "Neptune-like", colorLand: new THREE.Color(0x6495ED), desertColor: new THREE.Color(0x778899), mountainColor: new THREE.Color(0x708090), colorWater: new THREE.Color(0x1E90FF), snowColor: new THREE.Color(0xB0E2FF), atmosphereColor: new THREE.Color(0.4,0.6,1.0) },
-        { name: "Exoplanet-1", colorLand: new THREE.Color(0x8B4513), desertColor: new THREE.Color(0xA52A2A), mountainColor: new THREE.Color(0x654321), colorWater: new THREE.Color(0x006400), snowColor: new THREE.Color(0xFFFFFF), atmosphereColor: new THREE.Color(0.5,0.3,0.1) },
-        { name: "Exoplanet-2", colorLand: new THREE.Color(0x4682B4), desertColor: new THREE.Color(0x708090), mountainColor: new THREE.Color(0x2F4F4F), colorWater: new THREE.Color(0x000080), snowColor: new THREE.Color(0xF0F8FF), atmosphereColor: new THREE.Color(0.2,0.4,0.7) },
-        { name: "Exoplanet-3", colorLand: new THREE.Color(0xDAA520), desertColor: new THREE.Color(0xB8860B), mountainColor: new THREE.Color(0x8B4513), colorWater: new THREE.Color(0x228B22), snowColor: new THREE.Color(0xFFDAB9), atmosphereColor: new THREE.Color(0.7,0.5,0.2) },
-        { name: "Exoplanet-4", colorLand: new THREE.Color(0x483D8B), desertColor: new THREE.Color(0x6A5ACD), mountainColor: new THREE.Color(0x7B68EE), colorWater: new THREE.Color(0x0000CD), snowColor: new THREE.Color(0xE6E6FA), atmosphereColor: new THREE.Color(0.3,0.3,0.5) },
-        { name: "Exoplanet-5", colorLand: new THREE.Color(0x8FBC8F), desertColor: new THREE.Color(0xBDB76B), mountainColor: new THREE.Color(0x556B2F), colorWater: new THREE.Color(0x2E8B57), snowColor: new THREE.Color(0xF5F5DC), atmosphereColor: new THREE.Color(0.4,0.6,0.4) }
-    ];
+    if (starColorHex) {
+        starColor = parseInt(starColorHex, 16); // Convert hexadecimal to integer
+    }
 
-    const paletteIndex = Math.abs(hashStringToNumber(planetId)) % palettes.length;
-    const palette = palettes[paletteIndex];
+    // Define paletas de cores inspiradas em planetas reais
+    const palettes = [
+        {
+            name: "Earth-like",
+            colorLand: new THREE.Color(0x3CB371),      // MediumSeaGreen -  Better green for land
+            desertColor: new THREE.Color(0xF0E68C),      // Khaki -  More realistic desert
+            mountainColor: new THREE.Color(0x778899),    // LightSlateGray -  Subtle mountain color
+            colorWater: new THREE.Color(0x1E90FF),        // Dodger Blue
+            snowColor: new THREE.Color(0xFFFAFA),       // Snow White - Snow for mountain tops
+            atmosphereColor: new THREE.Color(0.6, 0.8, 1.0) // Light blue
+        },
+        {
+            name: "Mars-like",
+            colorLand: new THREE.Color(0xA0522D),        // Sienna -  Reddish-brown for Mars
+            desertColor: new THREE.Color(0xCD853F),        // Peru - Light red
+            mountainColor: new THREE.Color(0x8B4513),      // Saddle Brown
+            colorWater: new THREE.Color(0x8B0000),          // Dark Red
+            snowColor: new THREE.Color(0xF08080),     //LightCoral -  Dust storms on poles
+            atmosphereColor: new THREE.Color(1.0, 0.6, 0.4) // Reddish
+        },
+        {
+            name: "Venus-like",
+            colorLand: new THREE.Color(0xD2B48C),        // Tan - Sandy, brownish
+            desertColor: new THREE.Color(0xE9D6AC),        // PaleGoldenrod - Sandy Brown
+            mountainColor: new THREE.Color(0xB8860B),      // DarkGoldenrod
+            colorWater: new THREE.Color(0xFFE4C4),         // Bisque - Hazy
+            snowColor: new THREE.Color(0xFFE4C4),         // Bisque - Hazy
+            atmosphereColor: new THREE.Color(1.0, 0.8, 0.6) // Yellowish
+        },
+        {
+            name: "Jupiter-like",
+            colorLand: new THREE.Color(0xE9C2A6),        // LightGoldenrodYellow - For the brighter bands
+            desertColor: new THREE.Color(0xDEB887),        // Burlywood - Beige
+            mountainColor: new THREE.Color(0xA0522D),      // Sienna - Darker brown
+            colorWater: new THREE.Color(0xF5DEB3),          // Wheat - Light beige
+            snowColor: new THREE.Color(0xF5DEB3),        // Wheat
+            atmosphereColor: new THREE.Color(0.8, 0.6, 0.4) // Brownish
+        },
+        {
+            name: "Neptune-like",
+            colorLand: new THREE.Color(0x6495ED),        // CornflowerBlue
+            desertColor: new THREE.Color(0x778899),        // LightSlateGray
+            mountainColor: new THREE.Color(0x708090),      // SlateGray
+            colorWater: new THREE.Color(0x1E90FF),          // Dodger Blue
+            snowColor: new THREE.Color(0xB0E2FF),          // PowderBlue - Icy poles
+            atmosphereColor: new THREE.Color(0.4, 0.6, 1.0) // Dark Blue
+        },
+        {
+            name: "Exoplanet-1",
+            colorLand: new THREE.Color(0x8B4513),        // SaddleBrown
+            desertColor: new THREE.Color(0xA52A2A),        // Brown
+            mountainColor: new THREE.Color(0x654321),      // DarkBrown
+            colorWater: new THREE.Color(0x006400),          // DarkGreen
+            snowColor: new THREE.Color(0xFFFFFF),          // White
+            atmosphereColor: new THREE.Color(0.5, 0.3, 0.1) // Brownish-Orange
+        },
+        {
+            name: "Exoplanet-2",
+            colorLand: new THREE.Color(0x4682B4),        // SteelBlue
+            desertColor: new THREE.Color(0x708090),        // SlateGray
+            mountainColor: new THREE.Color(0x2F4F4F),      // DarkSlateGray
+            colorWater: new THREE.Color(0x000080),          // Navy
+            snowColor: new THREE.Color(0xF0F8FF),          // AliceBlue
+            atmosphereColor: new THREE.Color(0.2, 0.4, 0.7) // DarkBlue
+        },
+        {
+            name: "Exoplanet-3",
+            colorLand: new THREE.Color(0xDAA520),        // Goldenrod
+            desertColor: new THREE.Color(0xB8860B),        // DarkGoldenrod
+            mountainColor: new THREE.Color(0x8B4513),      // SaddleBrown
+            colorWater: new THREE.Color(0x228B22),          // ForestGreen
+            snowColor: new THREE.Color(0xFFDAB9),          // PeachPuff
+            atmosphereColor: new THREE.Color(0.7, 0.5, 0.2) // Goldish-Yellow
+        },
+        {
+            name: "Exoplanet-4",
+            colorLand: new THREE.Color(0x483D8B),        // DarkSlateBlue
+            desertColor: new THREE.Color(0x6A5ACD),        // SlateBlue
+            mountainColor: new THREE.Color(0x7B68EE),      // MediumSlateBlue
+            colorWater: new THREE.Color(0x0000CD),          // MediumBlue
+            snowColor: new THREE.Color(0xE6E6FA),          // Lavender
+            atmosphereColor: new THREE.Color(0.3, 0.3, 0.5) // DarkPurple
+        },
+        {
+            name: "Exoplanet-5",
+            colorLand: new THREE.Color(0x8FBC8F),        // DarkSeaGreen
+            desertColor: new THREE.Color(0xBDB76B),        // DarkKhaki
+            mountainColor: new THREE.Color(0x556B2F),      // DarkOliveGreen
+            colorWater: new THREE.Color(0x2E8B57),          // SeaGreen
+            snowColor: new THREE.Color(0xF5F5DC),          // Beige
+            atmosphereColor: new THREE.Color(0.4, 0.6, 0.4) // Greenish
+        }
 
-    let scene, camera, renderer, planet, atmosphere, sun, planetShaderMaterial, solarSystemGroup;
-    let isDragging = false, previousTouch = {x:0, y:0};
-    let rotationSpeed = 0.01, orbitAngle = 0, orbitSpeed = 0.01, systemRotationX = 0, systemRotationY = 0;
-    let atmosphereVisible = true, landVisible = true, planetSize = 0.2;
-    const waterColor = palette.colorWater;
+    ];
 
-    function init() {
-        scene = new THREE.Scene();
-        camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1,1000);
-        renderer = new THREE.WebGLRenderer({antialias:true});
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
-        scene.background = new THREE.Color(0x000000);
+    // Seleciona uma paleta com base no hash do ID
+    const paletteIndex = Math.abs(hashStringToNumber(planetId)) % palettes.length;
+    const palette = palettes[paletteIndex];
 
-        solarSystemGroup = new THREE.Group();
-        scene.add(solarSystemGroup);
+    let scene, camera, renderer, planet, atmosphere, sun, planetShaderMaterial, solarSystemGroup, sunMaterial, sunShader;
+    let isDragging = false;
+    let previousTouch = {x: 0, y: 0};
+    let rotationSpeed = 0.01; // Velocidade de rotação inicial
+    let orbitAngle = 0;
+    const orbitRadius = 2;
+    let orbitSpeed = 0.01; // Default orbit speed
+    let systemRotationX = 0;
+    let systemRotationY = 0;
 
-        // **SOL com a cor do cubo**
-        const sunGeometry = new THREE.SphereGeometry(0.5,32,32);
-        const sunMaterial = new THREE.MeshBasicMaterial({color: starColor, emissive: starColor});
-        sun = new THREE.Mesh(sunGeometry,sunMaterial);
-        scene.add(sun);
+    let atmosphereVisible = true;
+    let landVisible = true;
+    const waterColor = palette.colorWater;
+    let planetSize = 0.2;
 
-        const planetGeometry = new THREE.SphereGeometry(planetSize,64,64);
-        planetShaderMaterial = new THREE.ShaderMaterial({
-            uniforms: {
-                colorLand:{value: palette.colorLand},
-                desertColor:{value: palette.desertColor},
-                mountainColor:{value: palette.mountainColor},
-                colorWater:{value: palette.colorWater},
-                snowColor:{value: palette.snowColor},
-                seed:{value: Math.abs(hashStringToNumber(planetId))%1000},
-                lightDirection:{value: new THREE.Vector3(0.5,0.5,1)},
-                roughness:{value:0.5}
-            },
-            vertexShader: `varying vec3 vNormal; varying vec3 vPosition; void main(){vNormal=normalize(normal); vPosition=position; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
-            fragmentShader: `varying vec3 vNormal; varying vec3 vPosition; uniform vec3 colorLand; uniform vec3 desertColor; uniform vec3 mountainColor; uniform vec3 colorWater; uniform vec3 snowColor; uniform float seed; uniform vec3 lightDirection; uniform float roughness; void main(){float height=0.5; vec3 terrain=colorLand; vec3 color=mix(colorWater, terrain, 0.5); float diff=max(dot(normalize(vNormal),normalize(lightDirection)),0.0); color*=(roughness+0.5*diff); gl_FragColor=vec4(color,1.0);}`
-        });
-        planet = new THREE.Mesh(planetGeometry,planetShaderMaterial);
+    function init() {
+        // Cria a cena, câmera e renderizador
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        renderer = new THREE.WebGLRenderer({antialias: true});
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+        scene.background = new THREE.Color(0x000000);
 
-        const atmosphereMaterial = new THREE.ShaderMaterial({
-            vertexShader:`varying vec3 vNormal; void main(){vNormal=normalize(normal); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.1);}`,
-            fragmentShader:`varying vec3 vNormal; uniform vec3 atmosphereColor; void main(){float intensity=pow(1.0-dot(vNormal,vec3(0,0,1)),3.0); gl_FragColor=vec4(atmosphereColor,intensity*0.5);}`,
-            uniforms:{atmosphereColor:{value:palette.atmosphereColor}},
-            blending:THREE.AdditiveBlending,
-            side:THREE.BackSide,
-            transparent:true
-        });
-        atmosphere = new THREE.Mesh(planetGeometry, atmosphereMaterial);
-        atmosphere.scale.set(1.2,1.2,1.2);
-        planet.add(atmosphere);
-        solarSystemGroup.add(planet);
+        // Cria o grupo do sistema solar
+        solarSystemGroup = new THREE.Group();
+        scene.add(solarSystemGroup);
 
-        camera.position.z = 6;
+        // SOL ORIGINAL
+        const sunGeometryOriginal = new THREE.SphereGeometry(0.5, 32, 32);
+        const sunMaterialOriginal = new THREE.MeshBasicMaterial({color: starColor, emissive: starColor, emissiveIntensity: 1});
+        const sunOriginal = new THREE.Mesh(sunGeometryOriginal, sunMaterialOriginal);
+        sunOriginal.name = "sunOriginal"; // Nomeia para fácil acesso
+        scene.add(sunOriginal); // Adiciona diretamente à cena, fora do grupo do sistema solar
 
-        renderer.domElement.addEventListener('wheel', onMouseWheel,false);
-        renderer.domElement.addEventListener('touchstart', onTouchStart);
-        renderer.domElement.addEventListener('touchmove', onTouchMove);
-        renderer.domElement.addEventListener('touchend', onTouchEnd);
+        // SOL SHADER
+        const sunGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+        sunMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+                starColor: {value: new THREE.Color(starColor)}
+            },
+            vertexShader: `
+        varying vec3 vNormal;
+        void main() {
+          vNormal = normalize(normal);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+            fragmentShader: `
+        varying vec3 vNormal;
+        uniform vec3 starColor;
 
-        document.getElementById('settings-button').addEventListener('click', toggleSettings);
-        document.getElementById('toggle-atmosphere').addEventListener('click', toggleAtmosphere);
-        document.getElementById('toggle-land').addEventListener('click', toggleLand);
-        document.getElementById('rotation-speed').addEventListener('input', updateRotationSpeed);
-        document.getElementById('zoom-level').addEventListener('input', updateZoom);
-        document.getElementById('orbit-speed').addEventListener('input', updateOrbitSpeed);
-        document.getElementById('planet-size').addEventListener('input', updatePlanetSize);
-    }
+        void main() {
+          // Intensidade da cor com base no ângulo da normal
+          // Usando abs(dot) para manter a intensidade em todas as direções
+          float intensity = pow(abs(dot(vNormal, vec3(0.0, 0.0, 1.0))), 2.0);
 
-    function animate() {
-        requestAnimationFrame(animate);
-        orbitAngle+=orbitSpeed;
-        planet.position.x=Math.cos(orbitAngle)*2;
-        planet.position.z=Math.sin(orbitAngle)*2;
-        planet.rotation.y+=rotationSpeed;
-        solarSystemGroup.rotation.x=systemRotationX;
-        solarSystemGroup.rotation.y=systemRotationY;
-        renderer.render(scene,camera);
-    }
+          vec3 color = starColor * intensity;
 
-    function onMouseWheel(e){camera.position.z+=e.deltaY*0.1; camera.position.z=Math.max(4,Math.min(camera.position.z,8));}
-    function onTouchStart(e){if(e.touches.length===1){isDragging=true; previousTouch.x=e.touches[0].clientX; previousTouch.y=e.touches[0].clientY;}}
-    function onTouchMove(e){if(!isDragging||e.touches.length!==1)return; const touch=e.touches[0]; const deltaX=touch.clientX-previousTouch.x; const deltaY=touch.clientY-previousTouch.y; systemRotationY+=deltaX*0.005; systemRotationX+=deltaY*0.005; previousTouch.x=touch.clientX; previousTouch.y=touch.clientY;}
-    function onTouchEnd(){isDragging=false;}
-    function toggleSettings(){const m=document.getElementById('settings-menu'); m.style.display=m.style.display==='block'?'none':'block';}
-    function toggleAtmosphere(){atmosphereVisible=!atmosphereVisible; atmosphere.visible=atmosphereVisible; document.getElementById('toggle-atmosphere').textContent=atmosphereVisible?"Remover Atmosfera":"Adicionar Atmosfera";}
-    function toggleLand(){landVisible=!landVisible; if(landVisible){planet.material=planetShaderMaterial; document.getElementById('toggle-land').textContent="Remover Solo";}else{const mat=new THREE.ShaderMaterial({uniforms:{colorLand:{value:new THREE.Color(0x000000)},colorWater:{value:waterColor},seed:{value:Math.abs(hashStringToNumber(planetId))%1000},lightDirection:{value:new THREE.Vector3(0.5,0.5,1)}},vertexShader:`varying vec3 vNormal; varying vec3 vPosition; void main(){vNormal=normalize(normal); vPosition=position; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,fragmentShader:`varying vec3 vNormal; varying vec3 vPosition; uniform vec3 colorLand; uniform vec3 colorWater; uniform float seed; uniform vec3 lightDirection; void main(){float height=0.0; vec3 color=mix(colorWater,colorLand,smoothstep(0.45,0.5,height)); float diff=max(dot(normalize(vNormal),normalize(lightDirection)),0.0); color*=(0.5+0.5*diff); gl_FragColor=vec4(color,1.0);}`}); planet.material=mat; document.getElementById('toggle-land').textContent="Adicionar Solo";}}
-    function updateRotationSpeed(e){rotationSpeed=parseFloat(e.target.value);}
-    function updateZoom(e){camera.position.z=parseFloat(e.target.value);}
-    function updateOrbitSpeed(e){orbitSpeed=parseFloat(e.target.value);}
-    function updatePlanetSize(e){planetSize=parseFloat(e.target.value); planet.geometry.dispose(); planet.geometry=new THREE.SphereGeometry(planetSize,64,64); atmosphere.geometry.dispose(); atmosphere.geometry=new THREE.SphereGeometry(planetSize,64,64); atmosphere.scale.set(1.2,1.2,1.2);}
-    window.addEventListener('resize',()=>{renderer.setSize(window.innerWidth,window.innerHeight); camera.aspect=window.innerWidth/window.innerHeight; camera.updateProjectionMatrix();});
+          gl_FragColor = vec4(color, 0.8);
+        }
+      `,
+            transparent: true // Importante para ver a camada de baixo
+        });
 
-    init();
-    animate();
+        sunShader = new THREE.Mesh(sunGeometry, sunMaterial);
+        sunShader.name = "sunShader";
+        scene.add(sunShader); // Adiciona diretamente à cena, fora do grupo do sistema solar
+
+        // Material do planeta com texturas sólidas e arredondadas
+        planetShaderMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+                colorLand: {value: palette.colorLand},
+                desertColor: {value: palette.desertColor},
+                mountainColor: {value: palette.mountainColor},
+                colorWater: {value: palette.colorWater},
+                snowColor: {value: palette.snowColor},
+                seed: {value: Math.abs(hashStringToNumber(planetId)) % 1000},
+                lightDirection: {value: new THREE.Vector3(0.5, 0.5, 1)},
+                roughness: {value: 0.5}
+            },
+            vertexShader: `
+        varying vec3 vNormal;
+        varying vec3 vPosition;
+        void main() {
+          vNormal = normalize(normal);
+          vPosition = position;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+            fragmentShader: `
+        varying vec3 vNormal;
+        varying vec3 vPosition;
+        uniform vec3 colorLand;
+        uniform vec3 desertColor;
+        uniform vec3 mountainColor;
+        uniform vec3 colorWater;
+        uniform vec3 snowColor;
+        uniform float seed;
+        uniform vec3 lightDirection;
+		    uniform float roughness;
+
+        float rand(vec3 p) {
+          return fract(sin(dot(p, vec3(12.9898, 78.233, 45.164))) * seed);
+        }
+
+        float noise(vec3 p) {
+          vec3 i = floor(p);
+          vec3 f = fract(p);
+          f = f * f * (3.0 - 2.0 * f);
+          return mix(mix(mix(rand(i + vec3(0,0,0)), rand(i + vec3(1,0,0)), f.x),
+                         mix(rand(i + vec3(0,1,0)), rand(i + vec3(1,1,0)), f.x), f.y),
+                     mix(mix(rand(i + vec3(0,0,1)), rand(i + vec3(1,0,1)), f.x),
+                         mix(rand(i + vec3(0,1,1)), rand(i + vec3(1,1,1)), f.x), f.y), f.z);
+        }
+
+        float fbm(vec3 p) {
+          float value = 0.0;
+          float scale = 0.5;
+          for (int i = 0; i < 8; i++) { // Increase iterations for more detail
+            value += noise(p) * scale;
+            p *= 2.0;
+            scale *= 0.5;
+          }
+          return value;
+        }
+
+        void main() {
+          float height = fbm(vPosition * 5.0 + seed * 0.01);
+
+          // Refine the terrain blending using more noise functions and smoothsteps
+          // Blending for desert color based on height and noise
+          vec3 terrain = mix(colorLand, desertColor, smoothstep(0.5, 0.65, height + 0.1 * noise(vPosition * 20.0)));
+
+          // Blending for mountain color based on height and noise
+          terrain = mix(terrain, mountainColor, smoothstep(0.7, 0.85, height + 0.2 * noise(vPosition * 30.0))); // Montanhas mais definidas
+
+          // Adiciona neve nas montanhas mais altas
+          terrain = mix(terrain, snowColor, smoothstep(0.85, 0.95, height + 0.3 * noise(vPosition * 40.0)));
+
+          // Mais detalhes de relevo com mais camadas de FBM em diferentes escalas
+          float detailHeight1 = fbm(vPosition * 10.0 + seed * 0.02); // Camada de detalhe 1
+          float detailHeight2 = fbm(vPosition * 20.0 + seed * 0.03); // Camada de detalhe 2
+          float detailHeight3 = fbm(vPosition * 40.0 + seed * 0.04); // Camada de detalhe 3
+
+          // Combine as camadas de detalhes para adicionar mais variações de altura
+          height += detailHeight1 * 0.1;
+          height += detailHeight2 * 0.05;
+          height += detailHeight3 * 0.025;
+
+          // Add some rocky texture
+          float rockiness = fbm(vPosition * 60.0 + seed * 0.05) * 0.05; // Rockiness factor
+          height += rockiness;
+
+          // Sharpen transitions between terrain types
+          float landDesertBlend = smoothstep(0.5, 0.65, height + 0.1 * noise(vPosition * 20.0));
+          float mountainBlend = smoothstep(0.7, 0.85, height + 0.2 * noise(vPosition * 30.0));
+          float snowBlend = smoothstep(0.85, 0.95, height + 0.3 * noise(vPosition * 40.0));
+
+            // Apply blending using the sharpened transitions
+          terrain = mix(colorLand, desertColor, landDesertBlend);
+          terrain = mix(terrain, mountainColor, mountainBlend);
+          terrain = mix(terrain, snowColor, snowBlend);
+
+          // Adjust water color for better transition
+          vec3 finalWaterColor = mix(colorWater * 0.8, colorWater, smoothstep(0.3, 0.5, height));
+
+          // Blend da água melhorado e a água aparece nas elevações mais baixas
+          vec3 color = mix(finalWaterColor, terrain, smoothstep(0.4, 0.5, height));
+
+          // Iluminação sólida e arredondada
+          float diff = max(dot(normalize(vNormal), normalize(lightDirection)), 0.0);
+          color *= (roughness + 0.5 * diff);
+
+          gl_FragColor = vec4(color, 1.0);
+        }
+      `
+        });
+
+        const planetGeometry = new THREE.SphereGeometry(planetSize, 64, 64);
+        planet = new THREE.Mesh(planetGeometry, planetShaderMaterial);
+
+        //atmosfera
+        const atmosphereMaterial = new THREE.ShaderMaterial({
+            vertexShader: `
+        varying vec3 vNormal;
+        void main() {
+          vNormal = normalize(normal);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.1);
+        }
+      `,
+            fragmentShader: `
+        varying vec3 vNormal;
+        uniform vec3 atmosphereColor;
+
+        void main() {
+          float intensity = pow(1.0 - dot(vNormal, vec3(0, 0, 1)), 3.0);
+          vec3 color = atmosphereColor;
+          gl_FragColor = vec4(color, intensity * 0.5);
+        }
+      `,
+            uniforms: {
+                atmosphereColor: {value: palette.atmosphereColor}
+            },
+            blending: THREE.AdditiveBlending,
+            side: THREE.BackSide,
+            transparent: true
+        });
+        atmosphere = new THREE.Mesh(planetGeometry, atmosphereMaterial);
+        atmosphere.scale.set(1.2, 1.2, 1.2);
+
+        planet.add(atmosphere);
+        solarSystemGroup.add(planet); // Adiciona o planeta ao grupo do sistema solar
+
+        // Estrelas
+        const starsGeometry = new THREE.BufferGeometry();
+        const starsMaterial = new THREE.PointsMaterial({
+            color: 0xffffff, // Cor das estrelas
+            size: 0.02 // Tamanho das estrelas
+        });
+
+        const starVertices = [];
+        for (let i = 0; i < 1000; i++) {
+            const x = (Math.random() - 0.5) * 10;
+            const y = (Math.random() - 0.5) * 10;
+            const z = (Math.random() - 0.5) * 10;
+            starVertices.push(x, y, z);
+        }
+
+        starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+
+        const stars = new THREE.Points(starsGeometry, starsMaterial);
+        scene.add(stars);
+
+
+        camera.position.z = 6; // Initial zoom level further back
+
+        // Controles
+        renderer.domElement.addEventListener('wheel', onMouseWheel, false);
+
+        // Controle de rotação por toque
+        renderer.domElement.addEventListener('touchstart', onTouchStart);
+        renderer.domElement.addEventListener('touchmove', onTouchMove);
+        renderer.domElement.addEventListener('touchend', onTouchEnd);
+
+        // Event listeners for settings
+        document.getElementById('settings-button').addEventListener('click', toggleSettings);
+        document.getElementById('toggle-atmosphere').addEventListener('click', toggleAtmosphere);
+        document.getElementById('toggle-land').addEventListener('click', toggleLand);
+        document.getElementById('rotation-speed').addEventListener('input', updateRotationSpeed);
+        document.getElementById('zoom-level').addEventListener('input', updateZoom);
+        document.getElementById('orbit-speed').addEventListener('input', updateOrbitSpeed);
+        document.getElementById('planet-size').addEventListener('input', updatePlanetSize);
+
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+
+        // Atualiza a posição do planeta na órbita
+        orbitAngle += orbitSpeed;
+        planet.position.x = Math.cos(orbitAngle) * orbitRadius;
+        planet.position.z = Math.sin(orbitAngle) * orbitRadius;
+        planet.rotation.y += rotationSpeed;
+
+        // Aplica as rotações ao grupo do sistema solar
+        solarSystemGroup.rotation.x = systemRotationX;
+        solarSystemGroup.rotation.y = systemRotationY;
+
+        renderer.render(scene, camera);
+    }
+
+    function onMouseWheel(event) {
+        const zoomSpeed = 0.1;
+        camera.position.z += event.deltaY * zoomSpeed;
+        camera.position.z = Math.max(4, Math.min(camera.position.z, 8)); // Limit zoom
+    }
+
+    function onTouchStart(event) {
+        if (event.touches.length === 1) {
+            isDragging = true;
+            previousTouch.x = event.touches[0].clientX;
+            previousTouch.y = event.touches[0].clientY;
+        }
+    }
+
+    function onTouchMove(event) {
+        if (!isDragging || event.touches.length !== 1) return;
+        const touch = event.touches[0];
+        const deltaX = touch.clientX - previousTouch.x;
+        const deltaY = touch.clientY - previousTouch.y;
+
+        // Atualiza a rotação do sistema solar em vez do planeta individual
+        systemRotationY += deltaX * 0.005;
+        systemRotationX += deltaY * 0.005;
+
+        previousTouch.x = touch.clientX;
+        previousTouch.y = touch.clientY;
+    }
+
+    function onTouchEnd() {
+        isDragging = false;
+    }
+
+    function toggleSettings() {
+        const menu = document.getElementById('settings-menu');
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function toggleAtmosphere() {
+        atmosphereVisible = !atmosphereVisible;
+        atmosphere.visible = atmosphereVisible;
+        document.getElementById('toggle-atmosphere').textContent = atmosphereVisible ? "Remover Atmosfera" : "Adicionar Atmosfera";
+    }
+
+    function toggleLand() {
+        landVisible = !landVisible;
+        if (landVisible) {
+            planet.material = planetShaderMaterial;
+            document.getElementById('toggle-land').textContent = "Remover Solo";
+        } else {
+            // Quando o solo é removido, mantém-se apenas a cor da água (da paleta)
+            const smoothShaderMaterial = new THREE.ShaderMaterial({
+                uniforms: {
+                    colorLand: {value: new THREE.Color(0x000000)},
+                    colorWater: {value: waterColor},
+                    seed: {value: Math.abs(hashStringToNumber(planetId)) % 1000},
+                    lightDirection: {value: new THREE.Vector3(0.5, 0.5, 1)}
+                },
+                vertexShader: `
+          varying vec3 vNormal;
+          varying vec3 vPosition;
+          void main() {
+            vNormal = normalize(normal);
+            vPosition = position;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `,
+                fragmentShader: `
+          varying vec3 vNormal;
+          varying vec3 vPosition;
+          uniform vec3 colorLand;
+          uniform vec3 colorWater;
+          uniform float seed;
+          uniform vec3 lightDirection;
+          void main() {
+            float height = 0.0;
+            vec3 color = mix(colorWater, colorLand, smoothstep(0.45, 0.5, height));
+            float diff = max(dot(normalize(vNormal), normalize(lightDirection)), 0.0);
+            color *= (0.5 + 0.5 * diff);
+            gl_FragColor = vec4(color, 1.0);
+          }
+        `
+            });
+            planet.material = smoothShaderMaterial;
+            document.getElementById('toggle-land').textContent = "Adicionar Solo";
+        }
+    }
+
+    function updateRotationSpeed(event) {
+        rotationSpeed = parseFloat(event.target.value);
+    }
+
+    function updateZoom(event) {
+        camera.position.z = parseFloat(event.target.value);
+    }
+
+    function updateOrbitSpeed(event) {
+        orbitSpeed = parseFloat(event.target.value);
+    }
+
+    function updatePlanetSize(event) {
+        planetSize = parseFloat(event.target.value);
+        planet.geometry.dispose();
+        planet.geometry = new THREE.SphereGeometry(planetSize, 64, 64);
+        atmosphere.geometry.dispose();
+        atmosphere.geometry = new THREE.SphereGeometry(planetSize, 64, 64);
+        atmosphere.scale.set(1.2, 1.2, 1.2);
+    }
+
+    window.addEventListener('resize', () => {
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+    });
+
+    init();
+    animate();
 </script>
 
 </body>
