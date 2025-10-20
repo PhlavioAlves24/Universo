@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,15 +55,14 @@
     // Criar o Sol com brilho
     const sunGeometry = new THREE.SphereGeometry(0.3, 32, 32);
     const sunMaterial = new THREE.MeshStandardMaterial({
-        emissive: 0xFFFF00, // Cor de emissão (amarelo brilhante)
-        emissiveIntensity: 2, // Intensidade do brilho
-        color: 0xFFA500, // Cor base (laranja)
+        emissive: 0xFFFF00,
+        emissiveIntensity: 2,
+        color: 0xFFA500,
         roughness: 0.5
     });
     const sun = new THREE.Mesh(sunGeometry, sunMaterial);
     cube.add(sun);
 
-    // Criar efeito de brilho ao redor do Sol
     const sunGlowGeometry = new THREE.SphereGeometry(0.35, 32, 32);
     const sunGlowMaterial = new THREE.MeshBasicMaterial({
         color: 0xFFFF99,
@@ -125,6 +125,7 @@
                 camera.lookAt(targetPosition);
                 requestAnimationFrame(animate);
             } else {
+                localStorage.setItem('cameraPosition', JSON.stringify(initialPosition));
                 window.location.href = `planeta.html?id=${starId}`;
             }
         }
@@ -157,7 +158,13 @@
     const light = new THREE.PointLight(0xffffff, 1, 100);
     scene.add(light);
 
-    camera.position.z = 7;
+    const savedCamera = JSON.parse(localStorage.getItem('cameraPosition'));
+    if (savedCamera) {
+        camera.position.set(savedCamera.x, savedCamera.y, savedCamera.z);
+        localStorage.removeItem('cameraPosition');
+    } else {
+        camera.position.z = 7;
+    }
 
     function animate() {
         requestAnimationFrame(animate);
@@ -233,3 +240,4 @@
 
 </body>
 </html>
+```
